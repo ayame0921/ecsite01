@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from .models import Product
 from django.contrib.auth import authenticate, login
 from .forms import CustomUserCreationForm
@@ -12,6 +12,7 @@ from .models import Sale
 from .forms import PurchaseForm
 
 
+# Create your views here.
 def signup(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -27,9 +28,11 @@ def signup(request):
         form = CustomUserCreationForm()
     return render(request, 'app/signup.html', {'form': form})
 
+
 def index(request):
     products = Product.objects.all().order_by('-id')
     return render(request, 'app/index.html', {'products': products})
+
 
 def detail(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
@@ -51,6 +54,7 @@ def detail(request, product_id):
     }
     return render(request, 'app/detail.html', context)
 
+
 @login_required
 @login_required
 def toggle_fav_product_status(request):
@@ -68,7 +72,6 @@ def fav_products(request):
     user = request.user
     products = user.fav_products.all()
     return render(request, 'app/index.html', {'products': products})
-# Create your views here.
 
 
 @login_required
@@ -84,6 +87,7 @@ def change_item_amount(request):
         if cart_session[product_id] <= 0:
             del cart_session[product_id]
     return redirect('app:cart')
+
 
 def get_address(zip_code):
     REQUEST_URL =f'http://zipcloud.ibsnet.co.jp/api/search?zipcode={zip_code}'
@@ -151,14 +155,15 @@ def cart(request):
 
         else:
             return redirect('app:cart')
-    
-        context = {
+
+    context = {
             'purchase_form': purchase_form,
             'cart_products': cart_products,
             'total_price': total_price
-        }
+    }
 
-        return render(request, 'app/cart.html', context)
+    return render(request, 'app/cart.html', context)
+
 
 @login_required
 def order_history(request):
