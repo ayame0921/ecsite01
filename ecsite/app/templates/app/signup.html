@@ -4,7 +4,8 @@
 
 <h2>ユーザー登録</h2>
 
-<form method="post" action="{% url 'app:signup' %}">{% csrf_token %}
+<form method="post" action="{% url 'app:signup' %}">
+    {% csrf_token %}
 
     <label>メールアドレス</label>
     {{ form.email }}
